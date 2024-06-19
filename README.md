@@ -6,4 +6,5 @@ Akhil Akkapelli
 
 ## Specification
 
-[https://www.iso.org/standard/17366.html](https://www.iso.org/obp/ui/en/#iso:std:iso-iec:1539:-1:ed-5:v1:en)
+[ISO/IEC 1539-1:2023(en)
+Programming languages — Fortran — Part 1: Base language](https://www.iso.org/obp/ui/en/#iso:std:iso-iec:1539:-1:ed-5:v1:en)
