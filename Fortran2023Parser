@@ -3,7 +3,24 @@ parser grammar FortranF23Parser;
 options { tokenVocab = FortranF23Lexer; }
 
 
-programName: NAME;
+name: NAME | PROGRAM | END| FUNCTION | SUBROUTINE | MODULE
+	 | SUBMODULE | BLOCK | DATA | INTRINSIC | NONINTRINSIC | OPERATOR
+	 | READ | FORMATTED | UNFORMATTED | WRITE | ASSIGNMENT | USE | ONLY | IMPORT |  NONE | ALL
+	 | KIND | INTEGER | LEN | REAL | DOUBLE | PRECISION | COMPLEX | CHARACTER | LOGICAL | TYPE | CLASS 
+	 | EXTERNAL | IMPLICIT | PARAMETER | FORMAT | BIND | NAME | RESULT | ENTRY | STAT | TEAM | TEAMNUMBER | RE | IM 
+	 | SEQUENCE | PRIVATE | PROCEDURE | NOPASS | PASS | POINTER | ALLOCATABLE | CODIMENSION | CONTIGUOUS | DIMENSION 
+	 | PUBLIC | CONTAINS | FINAL | GENERIC | DEFERRED | NONOVERRIDABLE | INTENT | OPTIONAL | PROTECTED | SAVE | IN | OUT | INOUT 
+	 | INTERFACE | ABSTRACT | ENUM | ENUMERATOR | ASYNCHRONOUS | TARGET | VALUE | VOLATILE | EQUIVALENCE | COMMON | NAMELIST | EVENT
+	 | WAIT | UNTILCOUNT | POST | ERRMSG | ERROR | STOP | QUIET | ENDFILE | DEALLOCATE | CYCLE | CONTINUE | CLOSE | UNIT | IOSTAT 
+	 | IOMSG | ERR | STATUS | CALL | BACKSPACE | ALLOCATE | MOLD | SOURCE | OPEN | ACCESS | ACTION | BLANK | DECIMAL | DELIM 
+	 | ENCODING | FILE | FORM | NEWUNIT | PAD | POSITION | RECL | ROUND | SIGN | NULLIFY | LOCK | ACQUIREDLOCK | INQUIRE | IOLENGTH
+	 | EXIST | ID | NAMED | NEXTREC | NUMBER | OPENED | PENDING | POS | READWRITE | SEQUENTIAL | SIZE | STREAM | IF | GOTO | NEWINDEX
+	 | FLUSH | FAIL | IMAGE | EXIT | FORALL | WHERE | EOR | UNLOCK | SYNC | MEMORY | IMAGES | REWIND | RETURN | FMT | NML | ADVANCE | REC
+	 | PRINT | CRITICAL | CHANGE | SELECT | CASE | DEFAULT | ASSOCIATE | ELSEWHERE | IS | RANK | ELSE | THEN | DO | CONCURRENT | WHILE
+	 | SHARED | LOCAL | LOCALINIT | RECURSIVE | PURE | NONRECURSIVE | IMPURE | ELEMENTAL | NOTIFY | TYPEOF | CLASSOF | ENUMERATION
+	 | DIRECT | LEADINGZERO | REDUCE | SIMPLE;
+
+programName: name;
 
 // R1402 program-stmt -> PROGRAM program-name
 programStmt: PROGRAM programName;
@@ -11,11 +28,11 @@ programStmt: PROGRAM programName;
 // R1410 module-nature -> INTRINSIC | NON_INTRINSIC
 moduleNature: INTRINSIC | NONINTRINSIC;
 
-moduleName: NAME;
+moduleName: name;
 
-localName: NAME;
+localName: name;
 
-useName: NAME;
+useName: name;
 
 // R1004 defined-unary-op -> . letter [letter]... .
 definedUnaryOp: DEFINEDUNARYBINARYOP;
@@ -38,7 +55,7 @@ rename: localName IMPLIES useName |
 
 renameList: rename (COMMA rename)*;
 
-genericName: NAME;
+genericName: name;
 
 // R1008 power-op -> **
 powerOp: POWER;
@@ -125,7 +142,7 @@ useStmt:
     USE ((COMMA moduleNature)? DOUBLECOLON)? moduleName (COMMA renameList)? |
     USE ((COMMA moduleNature)? DOUBLECOLON)? moduleName COMMA ONLY COLON onlyList?;
 
-importName: NAME;
+importName: name;
 
 importNameList: importName (COMMA importName)*;
 
@@ -137,7 +154,7 @@ importStmt:
 	| IMPORT COMMA NONE
 	| IMPORT COMMA ALL;
 
-intConstantName: NAME;
+intConstantName: name;
 
 scalarIntConstantName: intConstantName;
 
@@ -172,7 +189,7 @@ signedIntLiteralConstant: sign? intLiteralConstant;
 signedRealLiteralConstant: sign? realLiteralConstant;
 
 // R606 named-constant -> name
-namedConstant: NAME;
+namedConstant: name;
 
 // R719 real-part -> signed-int-literal-constant | signed-real-literal-constant | named-constant
 realPart:
@@ -216,9 +233,9 @@ literalConstant:
 	| bozLiteralConstant;
 
 // R804 object-name -> name
-objectName: NAME;
+objectName: name;
 
-partName: NAME;
+partName: name;
 
 // R919 subscript -> scalar-int-expr
 subscript: scalarIntExpr;
@@ -251,11 +268,11 @@ cosubscript: scalarIntExpr;
 
 cosubscriptList: cosubscript (COMMA cosubscript)*;
 
-procedureName: NAME;
+procedureName: name;
 
-procedureComponentName: NAME;
+procedureComponentName: name;
 
-bindingName: NAME;		
+bindingName: name;		
 
 // R1528 consequent-arg: expr | variable;
 consequentArg: expr | variable;
@@ -356,7 +373,7 @@ coindexedNamedObject: dataRef;
 structureComponent: dataRef;
 
 // R903 variable-name -> name
-variableName: NAME;
+variableName: name;
 
 scalarVariableName: variableName;
 
@@ -392,12 +409,12 @@ designator:
 	| structureComponent
 	| substring;
 
-enumTypeName: NAME;
+enumTypeName: name;
 
 // R764 enum-type-spec -> enum-type-name
 enumTypeSpec: enumTypeName;
 
-enumerationTypeName: NAME;
+enumerationTypeName: name;
 
 // R770 enumeration-type-spec -> enumeration-type-name
 enumerationTypeSpec: enumerationTypeName;
@@ -405,7 +422,7 @@ enumerationTypeSpec: enumerationTypeName;
 // R702 type-spec -> intrinsic-type-spec | derived-type-spec | enum-type-spec | enumeration-type-spec
 typeSpec: intrinsicTypeSpec | derivedTypeSpec | enumTypeSpec | enumerationTypeSpec;
 
-intVariableName: NAME;
+intVariableName: name;
 
 scalarIntVariableName: intVariableName;
 
@@ -464,7 +481,7 @@ procedureDesignator:
 functionReference:
     procedureDesignator LPAREN actualArgSpecList? RPAREN;
 
-typeParamName: NAME;
+typeParamName: name;
 
 // R916 type-param-inquiry -> designator % type-param-name
 typeParamInquiry: designator PERCENT typeParamName;
@@ -575,10 +592,10 @@ intrinsicTypeSpec:
 	| CHARACTER charSelector?
 	| LOGICAL kindSelector?;
 
-typeName: NAME;
+typeName: name;
 
 // R516 keyword -> name
-keyword: NAME;
+keyword: name;
 
 // R755 type-param-spec -> [keyword =] type-param-value
 typeParamSpec: (keyword ASSIGN)? typeParamValue;
@@ -738,7 +755,7 @@ formatSpecification:
 ///FORMATIN -> FORMAT LPAREN
 formatStmt: FORMATIN formatSpecification RPAREN;
 
-entryName: NAME;
+entryName: name;
 
 // R1539 dummy-arg -> dummy-arg-name | *
 dummyArg:
@@ -763,7 +780,7 @@ languageBindingSpec:
 procLanguageBindingSpec:
     languageBindingSpec;
 
-resultName: NAME;
+resultName: name;
 
 // R1535 suffix ->
 //         proc-language-binding-spec [RESULT ( result-name )] |
@@ -874,7 +891,7 @@ componentAttrSpec:
 
 componentAttrSpecList: componentAttrSpec (COMMA componentAttrSpec)*;
 
-componentName: NAME;
+componentName: name;
 
 // R743 component-initialization -> = constant-expr | => null-init | => initial-data-target
 componentInitialization:
@@ -894,12 +911,12 @@ dataComponentDefStmt:
 	declarationTypeSpec ((COMMA componentAttrSpecList)? DOUBLECOLON)? componentDeclList;
 
 // R1516 interface-name -> name
-interfaceName: NAME;
+interfaceName: name;
 
 // R1513 proc-interface -> interface-name | declaration-type-spec
 procInterface: interfaceName | declarationTypeSpec;
 
-argName: NAME;
+argName: name;
 
 // R742 proc-component-attr-spec -> access-spec | NOPASS | PASS [(arg-name)] | POINTER
 procComponentAttrSpec:
@@ -910,7 +927,7 @@ procComponentAttrSpec:
 
 procComponentAttrSpecList: procComponentAttrSpec (COMMA procComponentAttrSpec)*;
 
-procedureEntityName: NAME;  
+procedureEntityName: name;  
 
 // R806 null-init -> function-reference
 nullInit: functionReference;
@@ -970,7 +987,7 @@ typeBoundProcedureStmt:
 typeBoundGenericStmt:
 	GENERIC (COMMA accessSpec)? DOUBLECOLON genericSpec IMPLIES bindingNameList;
 
-finalSubroutineName: NAME;
+finalSubroutineName: name;
 
 finalSubroutineNameList: finalSubroutineName (COMMA finalSubroutineName)*;
 
@@ -1068,7 +1085,7 @@ procAttrSpec:
 procedureDeclarationStmt:
     PROCEDURE LPAREN procInterface? RPAREN ((COMMA procAttrSpec)* DOUBLECOLON)? procDeclList;
 
-accessName: NAME;
+accessName: name;
 
 // R831 access-id -> access-name | generic-spec
 accessId: accessName | genericSpec;
@@ -1138,9 +1155,9 @@ objectNameList: objectName (COMMA objectName)*;
 // R834 asynchronous-stmt -> ASYNCHRONOUS [::] object-name-list
 asynchronousStmt: ASYNCHRONOUS DOUBLECOLON? objectNameList;
 
-entityName: NAME;
+entityName: name;
 
-commonBlockName: NAME;
+commonBlockName: name;
 
 // R836 bind-entity -> entity-name | / common-block-name /
 bindEntity: entityName | SLASH commonBlockName SLASH;
@@ -1150,7 +1167,7 @@ bindEntityList: bindEntity (COMMA bindEntity)*;
 // R835 bind-stmt -> language-binding-spec [::] bind-entity-list
 bindStmt: languageBindingSpec DOUBLECOLON? bindEntityList;
 
-coarrayName: NAME;
+coarrayName: name;
 
 // R838 codimension-decl -> coarray-name lbracket coarray-spec rbracket
 codimensionDecl: coarrayName lbracket coarraySpec rbracket;
@@ -1163,13 +1180,13 @@ codimensionStmt: CODIMENSION DOUBLECOLON? codimensionDeclList;
 // R839 contiguous-stmt -> CONTIGUOUS [::] object-name-list
 contiguousStmt: CONTIGUOUS DOUBLECOLON? objectNameList;
 
-arrayName: NAME;
+arrayName: name;
 
 // R851 dimension-stmt -> DIMENSION [::] array-name ( array-spec ) [, array-name ( array-spec )]...
 dimensionStmt:
 	DIMENSION DOUBLECOLON? arrayName LPAREN arraySpec RPAREN (COMMA arrayName LPAREN arraySpec RPAREN)*;
 
-externalName: NAME;
+externalName: name;
 
 externalNameList: externalName (COMMA externalName)*;
 
@@ -1181,7 +1198,7 @@ externalStmt:
 intentStmt:
 	INTENT LPAREN intentSpec RPAREN DOUBLECOLON? dummyArgNameList;
 
-intrinsicProcedureName: NAME;
+intrinsicProcedureName: name;
 
 intrinsicProcedureNameList: intrinsicProcedureName (COMMA intrinsicProcedureName)*;
 
@@ -1189,7 +1206,7 @@ intrinsicProcedureNameList: intrinsicProcedureName (COMMA intrinsicProcedureName
 intrinsicStmt:
     INTRINSIC DOUBLECOLON? intrinsicProcedureNameList;
 
-namelistGroupName: NAME;
+namelistGroupName: name;
 
 // R872 namelist-group-object -> variable-name
 namelistGroupObject: variableName;
@@ -1205,9 +1222,9 @@ namelistStmt:
 // R853 optional-stmt -> OPTIONAL [::] dummy-arg-name-list
 optionalStmt: OPTIONAL DOUBLECOLON? dummyArgNameList;			
 
-procEntityName: NAME;
+procEntityName: name;
 
-procptrEntityName: NAME;
+procptrEntityName: name;
 
 // R857 pointer-decl -> object-name [( deferred-shape-spec-list )] | procptr-entity-name
 pointerDecl:  objectName (LPAREN deferredShapeSpecList RPAREN)? | procptrEntityName;
@@ -1223,7 +1240,7 @@ entityNameList: entityName (COMMA entityName)*;
 protectedStmt: PROTECTED DOUBLECOLON? entityNameList;
 
 // R861 proc-pointer-name -> name
-procPointerName: NAME;
+procPointerName: name;
 
 // R860 saved-entity -> object-name | proc-pointer-name | / common-block-name /
 savedEntity:
@@ -1353,7 +1370,7 @@ typeDeclarationStmt:
 // R767 enumeration-type-stmt -> ENUMERATION TYPE [[, access-spec] ::] enumeration-type-name
 enumerationTypeStmt: ENUMERATION TYPE ((COMMA accessSpec)? DOUBLECOLON)? enumerationTypeName;
 
-enumeratorName: NAME;
+enumeratorName: name;
 
 enumeratorNameList: enumeratorName (COMMA enumeratorName)*;
 
@@ -1591,7 +1608,7 @@ closeStmt: CLOSE LPAREN closeSpecList RPAREN;
 // R1161 continue-stmt -> CONTINUE
 continueStmt: CONTINUE;
 
-doConstructName: NAME;
+doConstructName: name;
 
 // R1135 cycle-stmt -> CYCLE [do-construct-name]
 cycleStmt: CYCLE doConstructName?;
@@ -1645,7 +1662,7 @@ eventWaitSpecList: eventWaitSpec (COMMA eventWaitSpec)*;
 // R1176 event-wait-stmt -> EVENT WAIT ( event-variable [, event-wait-spec-list] )
 eventWaitStmt: EVENT WAIT LPAREN eventVariable (COMMA eventWaitSpecList)? RPAREN;
 
-constructName: NAME;
+constructName: name;
 
 // R1158 exit-stmt -> EXIT [construct-name]
 exitStmt: EXIT constructName?;
@@ -1859,7 +1876,7 @@ connectSpecList: connectSpec (COMMA connectSpec)*;
 // R1204 open-stmt -> OPEN ( connect-spec-list )
 openStmt: OPEN LPAREN connectSpecList RPAREN;
 
-dataPointerComponentName: NAME;
+dataPointerComponentName: name;
 
 // R1035 data-pointer-object ->
 //         variable-name | scalar-variable % data-pointer-component-name
@@ -2017,7 +2034,7 @@ labelList: label (COMMA label)*;
 // R1160 computed-goto-stmt -> GO TO ( label-list ) [,] scalar-int-expr
 computedGotoStmt: GOTO LPAREN labelList RPAREN COMMA? scalarIntExpr;
 
-indexName: NAME;
+indexName: name;
 
 // R1127 concurrent-limit -> scalar-int-expr
 concurrentLimit: scalarIntExpr;
@@ -2092,9 +2109,9 @@ actionStmt:
 	| computedGotoStmt
 	| forallStmt;
 
-associateConstructName: NAME;
+associateConstructName: name;
 
-associateName: NAME;
+associateName: name;
 
 // R1105 selector -> expr | variable
 selector: expr | variable;
@@ -2125,7 +2142,7 @@ endAssociateStmt:  END ASSOCIATE associateConstructName?;
 // R1102 associate-construct -> associate-stmt block end-associate-stmt
 associateConstruct: associateStmt block endAssociateStmt;
 
-blockConstructName: NAME;
+blockConstructName: name;
 
 // R1108 block-stmt -> [block-construct-name :] BLOCK
 blockStmt: (blockConstructName COLON)? BLOCK;
@@ -2143,7 +2160,7 @@ endBlockStmt: END BLOCK blockConstructName?;
 //         block-stmt [block-specification-part] block end-block-stmt
 blockConstruct: blockStmt blockSpecificationPart? block endBlockStmt;
 
-caseConstructName: NAME;
+caseConstructName: name;
 
 // R1146 case-expr -> scalar-expr
 caseExpr: scalarExpr;
@@ -2174,7 +2191,7 @@ endSelectStmt: END SELECT caseConstructName?;
 // R1142 case-construct -> select-case-stmt [case-stmt block]... end-select-stmt
 caseConstruct: selectCaseStmt (caseStmt block)* endSelectStmt;
 
-teamConstructName: NAME;
+teamConstructName: name;
 
 // R1113 coarray-association -> codimension-decl => selector
 coarrayAssociation: codimensionDecl IMPLIES selector;
@@ -2194,7 +2211,7 @@ endChangeTeamStmt: END TEAM (LPAREN syncStatList? RPAREN)? teamConstructName?;
 // R1111 change-team-construct -> change-team-stmt block end-change-team-stmt
 changeTeamConstruct: changeTeamStmt block endChangeTeamStmt;
 
-criticalConstructName: NAME;
+criticalConstructName: name;
 
 // R1117 critical-stmt ->
 //         [critical-construct-name :] CRITICAL [( [sync-stat-list] )]
@@ -2211,7 +2228,7 @@ variableNameList: variableName (COMMA variableName)*;
 // R1132 binary-reduce-op -> + | * | .AND. | .OR. | .EQV. | .NEQV.
 binaryReduceOp: PLUS | ASTERIK | AND | OR | EQV | NEQV;
 
-functionReductionName: NAME;
+functionReductionName: name;
 
 // R1131 reduce-operation -> binary-reduce-op | function-reduction-name
 reduceOperation: binaryReduceOp | functionReductionName;
@@ -2257,7 +2274,7 @@ endDo: endDoStmt | continueStmt;
 // R1119 do-construct -> do-stmt block end-do
 doConstruct: doStmt block endDo;
 
-ifConstructName: NAME;
+ifConstructName: name;
 
 // R1137 if-then-stmt -> [if-construct-name :] IF ( scalar-logical-expr ) THEN
 ifThenStmt: (ifConstructName COLON)? IF LPAREN scalarLogicalExpr RPAREN THEN;
@@ -2277,7 +2294,7 @@ endIfStmt: END IF ifConstructName?;
 ifConstruct:
     ifThenStmt block (elseIfStmt block)* (elseStmt block)? endIfStmt;
 
-selectConstructName: NAME;
+selectConstructName: name;
 
 // R1151 select-rank-stmt ->
 //         [select-construct-name :] SELECT RANK ( [associate-name =>] selector )
@@ -2319,7 +2336,7 @@ endSelectTypeStmt: END SELECT selectConstructName?;
 //         select-type-stmt [type-guard-stmt block]... end-select-type-stmt
 selectTypeConstruct: selectTypeStmt (typeGuardStmt block)* endSelectTypeStmt;
 
-whereConstructName: NAME;
+whereConstructName: name;
 
 // R1044 where-construct-stmt -> [where-construct-name :] WHERE ( mask-expr )
 whereConstructStmt: (whereConstructName COLON)? WHERE LPAREN maskExpr RPAREN;
@@ -2343,7 +2360,7 @@ endWhereStmt: END WHERE whereConstructName?;
 //         [elsewhere-stmt [where-body-construct]...] end-where-stmt
 whereConstruct: whereConstructStmt (whereBodyConstruct)* (maskedElsewhereStmt (whereBodyConstruct)*)* (elsewhereStmt (whereBodyConstruct)*)? endWhereStmt;
 
-forallConstructName: NAME;
+forallConstructName: name;
 
 // R1052 forall-construct-stmt ->
 //         [forall-construct-name :] FORALL concurrent-header
@@ -2406,10 +2423,10 @@ prefixSpec:
 prefix:
     prefixSpec+;
 
-functionName: NAME;
+functionName: name;
 
 // R1534 dummy-arg-name -> name
-dummyArgName: NAME;
+dummyArgName: name;
 
 dummyArgNameList: dummyArgName (COMMA dummyArgName)*;
 
@@ -2428,7 +2445,7 @@ endFunctionStmt:
 functionSubprogram:
     functionStmt (specificationPart)? (executionPart)? (internalSubprogramPart)? endFunctionStmt;
 
-subroutineName: NAME;
+subroutineName: name;
 
 // R1538 subroutine-stmt ->
 //         [prefix] SUBROUTINE subroutine-name
@@ -2483,14 +2500,14 @@ endModuleStmt: END (MODULE moduleName?)?;
 module:
     moduleStmt specificationPart? moduleSubprogramPart? endModuleStmt;
 
-ancestorModuleName: NAME;
+ancestorModuleName: name;
 
-parentSubmoduleName: NAME;
+parentSubmoduleName: name;
 
 // R1418 parent-identifier -> ancestor-module-name [: parent-submodule-name]
 parentIdentifier: ancestorModuleName (COLON parentSubmoduleName)?;
 
-submoduleName: NAME;
+submoduleName: name;
 
 // R1417 submodule-stmt -> SUBMODULE ( parent-identifier ) submodule-name
 submoduleStmt: SUBMODULE LPAREN parentIdentifier RPAREN submoduleName;
@@ -2504,7 +2521,7 @@ endSubmoduleStmt: END (SUBMODULE submoduleName?)?;
 submodule:
     submoduleStmt specificationPart? moduleSubprogramPart? endSubmoduleStmt;
 
-blockDataName: NAME;
+blockDataName: name;
 
 // R1421 block-data-stmt -> BLOCK DATA [block-data-name]
 blockDataStmt: BLOCK DATA blockDataName?;
