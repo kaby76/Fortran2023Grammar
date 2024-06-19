@@ -284,7 +284,8 @@ consequent: consequentArg | NIL;
 conditionalArg: LPAREN scalarLogicalExpr QUESTION consequent (COLON scalarLogicalExpr QUESTION consequent)* COLON consequent RPAREN;
 
 // R611 label -> digit [digit [digit [digit [digit]]]]
-label: DIGIT (DIGIT (DIGIT (DIGIT (DIGIT)?)?)?)?;
+///ISSUE OF SINGLE DIGIT NUMBERS TOKENIZED AS DIGITSTRING INSTEAD OF DIGIT
+label: DIGITSTRING;
 
 // R1525 alt-return-spec -> * label
 altReturnSpec:
@@ -752,8 +753,9 @@ formatSpecification:
 
 // R1301 format-stmt -> FORMAT format-specification
 ///MODIFIED RULE: Enter into FORMAT Micro Grammer with FORMATIN and Exit with RPAREN
+///Added optional label for format statement
 ///FORMATIN -> FORMAT LPAREN
-formatStmt: FORMATIN formatSpecification RPAREN;
+formatStmt: label? FORMATIN formatSpecification RPAREN;
 
 entryName: name;
 
