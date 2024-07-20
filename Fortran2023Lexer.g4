@@ -1,4 +1,4 @@
-lexer grammar FortranF23Lexer;
+lexer grammar Fortran2023Lexer;
 
 options { caseInsensitive=true; }
 

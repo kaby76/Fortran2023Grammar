@@ -1,6 +1,6 @@
-parser grammar FortranF23Parser;
+parser grammar Fortran2023Parser;
 
-options { tokenVocab = FortranF23Lexer; }
+options { tokenVocab = Fortran2023Lexer; }
 
 
 name: NAME | PROGRAM | END| FUNCTION | SUBROUTINE | MODULE
@@ -2544,3 +2544,5 @@ programUnit:
 
 //R501 program -> program-unit [program-unit]...    
 program: programUnit (programUnit)*;
+
+file_: program EOF;
